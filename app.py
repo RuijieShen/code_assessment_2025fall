@@ -99,7 +99,7 @@ def simulate():
         'simulatedData': df.to_dict(orient='records')
 
     }
-# Rachel 10:51 PM
+
  
 
     return jsonify(response)
@@ -109,3 +109,6 @@ def simulate():
 if __name__ == '__main__':
 
     app.run(debug=True)
+
+    print("Rachel Test")
+
