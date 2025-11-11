@@ -45,12 +45,23 @@ def simulate():
     observed_temp_c = (observed_temp - 32) * 5.0 / 9.0
 
  
+# ---- Add right-tail variance to predicted temperature ----
+    # Instead of symmetric normal noise, use a right-skewed (lognormal) noise
+    # This will produce higher variability on the positive side (right tail)
+    base_noise = np.random.normal(0, 1, number_of_rows)
+    right_tail_noise = np.random.lognormal(mean=0, sigma=0.3, size=number_of_rows) - np.exp(0.3**2 / 2)
+    
+    # Combine symmetric and right-skewed components
+    skewed_noise = 0.7 * base_noise + 0.3 * right_tail_noise
+    
+    # Apply the noise to observed temperature
+    predicted_temp_c = observed_temp_c + skewed_noise
 
     # Disturb predictedTemperature by adding normal noise
-
-    predicted_temp_c = observed_temp_c + np.random.normal(0, 1, number_of_rows)
-
- 
+    right_tail_noise = np.random.lognormal(mean=0.3, sigma=0.6, size=number_of_rows)
+    right_tail_noise = right_tail_noise - np.mean(right_tail_noise) * 0.4
+    bias_factor = (observed_temp_c - observed_temp_c.min()) / (observed_temp_c.max() - observed_temp_c.min())
+    predicted_temp_c = observed_temp_c + 0.3 * right_tail_noise + 2 * bias_factor
 
     # Create DataFrame
 
